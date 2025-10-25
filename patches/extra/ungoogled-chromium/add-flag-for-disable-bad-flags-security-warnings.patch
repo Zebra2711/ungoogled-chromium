@@ -1,0 +1,23 @@
+--- a/chrome/browser/ui/startup/infobar_utils.cc
++++ b/chrome/browser/ui/startup/infobar_utils.cc
+@@ -58,6 +58,9 @@
+ 
+ namespace {
+ bool ShouldShowBadFlagsSecurityWarnings() {
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-bad-flags-warnings") {
++    return false;
++  }
+ #if !BUILDFLAG(IS_CHROMEOS)
+   PrefService* local_state = g_browser_process->local_state();
+   if (!local_state) {
+--- a/chrome/browser/ungoogled_flag_entries.h
++++ b/chrome/browser/ungoogled_flag_entries.h
+@@ -148,4 +148,8 @@
+      "Increases the storage quota for Incognito and Guest profiles",
+      "Makes Incognito and Guest profiles compute the storage quota with the same algorithm that regular profiles use. This makes it harder for websites to detect Incognito mode, but may allow sites to induce heavy memory pressure. ungoogled-chromium flag.",
+      kOsAll, FEATURE_VALUE_TYPE(storage::features::kIncreaseIncognitoStorageQuota)},
++    {"disable-bad-flags-warnings",
++     "Security warnings for dangerous command-line flags",
++     "Shows security warnings when potentially bad command-line flags are used to launch Chromium. Disable to prevent security warnings from appearing when Chromium is launched with potentially dangerous command-line flags. On Microsoft® Windows®, this policy is only available on instances that are joined to a Microsoft® Active Directory® domain, joined to Microsoft® Azure® Active Directory® or enrolled in Chrome Enterprise Core. On macOS, this is only available on instances that are managed via MDM, joined to a domain via MCX or enrolled in Chrome Enterprise Core. ungoogled-chromium flag.",
++     kOsAll, SINGLE_DISABLE_VALUE_TYPE("disable-bad-flags-warnings")},
+ #endif  // CHROME_BROWSER_UNGOOGLED_FLAG_ENTRIES_H_
